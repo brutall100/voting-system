@@ -1,0 +1,1261 @@
+/* =========================================================
+   Voting System · "Ballot box" theme
+   Every colour lives here in :root. Change the palette in one place.
+   ========================================================= */
+
+:root {
+  /* Palette (light) */
+  --bg: #F4EEFF;             /* page background        rgb(244, 238, 255) */
+  --surface: #DCD6F7;        /* ballots, cards          rgb(220, 214, 247) */
+  --accent: #A6B1E1;         /* glows, decoration       rgb(166, 177, 225) */
+  --ink: #424874;            /* text, primary buttons   rgb(66, 72, 116)   */
+
+  --text: var(--ink);                    /* 7.68:1 on bg, 6.22:1 on surface */
+  --text-soft: #555B8C;                  /* softer ink: 4.6:1 on surface    */
+  --primary: var(--ink);
+  --on-primary: var(--bg);               /* 7.68:1 */
+  --border-strong: #7078AD;              /* inputs and boxes: 3.0:1+ (UI)   */
+  --border-soft: color-mix(in srgb, var(--accent) 70%, transparent);
+  --track: color-mix(in srgb, var(--accent) 45%, var(--bg));
+  --focus: var(--ink);
+  --perforation: color-mix(in srgb, var(--ink) 35%, transparent);
+  --stamp: var(--ink);
+
+  /* Background layers */
+  --backdrop-bg: var(--bg);
+  --glow-1: color-mix(in srgb, var(--accent) 75%, transparent);
+  --glow-2: color-mix(in srgb, var(--surface) 90%, transparent);
+  --paper-line: color-mix(in srgb, var(--accent) 30%, transparent);
+  --slip-bg: color-mix(in srgb, var(--bg) 85%, transparent);
+  --slip-line: color-mix(in srgb, var(--ink) 45%, transparent);
+
+  /* Surfaces */
+  --topbar-bg: color-mix(in srgb, var(--bg) 78%, transparent);
+  --shadow-color: color-mix(in srgb, var(--ink) 22%, transparent);
+  --shadow: 0 10px 30px -12px var(--shadow-color);
+  --shadow-lift: 0 18px 40px -14px var(--shadow-color);
+  --ripple: color-mix(in srgb, var(--on-primary) 45%, transparent);
+
+  /* Type */
+  --font-display: "Henny Penny", "Overlock SC", cursive;
+  --font-heading: "Overlock SC", "Sansation", sans-serif;
+  --font-body: "Sansation", "Segoe UI", system-ui, sans-serif;
+
+  /* Shape */
+  --radius: 18px;
+  --radius-btn: 14px 14px 14px 4px;   /* a tag / ballot corner */
+  --notch-y: 58px;                     /* where the ballot perforation sits */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  color-scheme: light;
+}
+
+/* Dark palette: the same four colours, turned inside out. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16182B;               /* deep shade of the ink colour */
+    --surface: #23264A;
+    --text: #F4EEFF;             /* 15.4:1 on bg, 12.8:1 on surface */
+    --text-soft: #DCD6F7;        /* 10.4:1 on surface */
+    --primary: #A6B1E1;          /* buttons glow in the dark */
+    --on-primary: #16182B;       /* 8.3:1 */
+    --border-strong: #8A94C8;    /* 4.9:1 on surface */
+    --track: color-mix(in srgb, #A6B1E1 18%, #16182B);
+    --focus: #A6B1E1;
+    --perforation: color-mix(in srgb, #A6B1E1 40%, transparent);
+    --stamp: #A6B1E1;
+    --glow-1: color-mix(in srgb, #A6B1E1 45%, transparent);
+    --glow-2: color-mix(in srgb, #424874 95%, transparent);
+    --paper-line: color-mix(in srgb, #A6B1E1 10%, transparent);
+    --slip-bg: color-mix(in srgb, #A6B1E1 22%, transparent);
+    --slip-line: color-mix(in srgb, #F4EEFF 55%, transparent);
+    --shadow-color: color-mix(in srgb, #000000 55%, transparent);
+    --ripple: color-mix(in srgb, #16182B 35%, transparent);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #16182B;
+  --surface: #23264A;
+  --text: #F4EEFF;
+  --text-soft: #DCD6F7;
+  --primary: #A6B1E1;
+  --on-primary: #16182B;
+  --border-strong: #8A94C8;
+  --track: color-mix(in srgb, #A6B1E1 18%, #16182B);
+  --focus: #A6B1E1;
+  --perforation: color-mix(in srgb, #A6B1E1 40%, transparent);
+  --stamp: #A6B1E1;
+  --glow-1: color-mix(in srgb, #A6B1E1 45%, transparent);
+  --glow-2: color-mix(in srgb, #424874 95%, transparent);
+  --paper-line: color-mix(in srgb, #A6B1E1 10%, transparent);
+  --slip-bg: color-mix(in srgb, #A6B1E1 22%, transparent);
+  --slip-line: color-mix(in srgb, #F4EEFF 55%, transparent);
+  --shadow-color: color-mix(in srgb, #000000 55%, transparent);
+  --ripple: color-mix(in srgb, #16182B 35%, transparent);
+  color-scheme: dark;
+}
+
+/* ---------- Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+svg {
+  display: block;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+main:focus {
+  outline: none;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 0.7rem 1.1rem;
+  border-radius: var(--radius-btn);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-family: var(--font-heading);
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform 0.2s var(--ease-out);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ---------- Live background ---------- */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--backdrop-bg);
+}
+
+.backdrop__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  will-change: transform;
+}
+
+.backdrop__glow--one {
+  top: -18vmax;
+  left: -12vmax;
+  width: 60vmax;
+  height: 60vmax;
+  background: radial-gradient(circle, var(--glow-1), transparent 65%);
+  animation: drift-one 28s ease-in-out infinite alternate;
+}
+
+.backdrop__glow--two {
+  right: -16vmax;
+  bottom: -22vmax;
+  width: 65vmax;
+  height: 65vmax;
+  background: radial-gradient(circle, var(--glow-2), transparent 65%);
+  animation: drift-two 34s ease-in-out infinite alternate;
+}
+
+/* Faint lined ballot paper, fading towards the edges. */
+.backdrop__paper {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(to bottom, transparent 0 31px, var(--paper-line) 31px 32px),
+    repeating-linear-gradient(to right, transparent 0 31px, var(--paper-line) 31px 32px);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+  opacity: 0.7;
+}
+
+.backdrop__ballots {
+  position: absolute;
+  inset: 0;
+}
+
+.floating-ballot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--size);
+  height: calc(var(--size) * 1.3);
+  border: 1.5px solid var(--slip-line);
+  border-radius: 3px;
+  background: var(--slip-bg);
+  opacity: 0;
+  animation: rise var(--duration) linear var(--delay) infinite;
+  will-change: transform, opacity;
+}
+
+/* The tick on each floating ballot. */
+.floating-ballot::after {
+  content: "";
+  position: absolute;
+  top: 28%;
+  left: 30%;
+  width: 40%;
+  height: 22%;
+  border-left: 2px solid var(--slip-line);
+  border-bottom: 2px solid var(--slip-line);
+  transform: rotate(-45deg);
+}
+
+.floating-ballot--blank::after {
+  top: 30%;
+  left: 20%;
+  width: 60%;
+  height: 30%;
+  border-left: 0;
+  border-bottom: 1.5px dashed var(--slip-line);
+  border-top: 1.5px dashed var(--slip-line);
+  transform: none;
+}
+
+@keyframes rise {
+  0% {
+    transform: translate3d(var(--x), 108vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--alpha);
+  }
+  50% {
+    transform: translate3d(calc(var(--x) + var(--sway)), 45vh, 0) rotate(calc(var(--spin) * 0.5));
+  }
+  88% {
+    opacity: var(--alpha);
+  }
+  100% {
+    transform: translate3d(calc(var(--x) - var(--sway) * 0.4), -12vh, 0) rotate(var(--spin));
+    opacity: 0;
+  }
+}
+
+@keyframes drift-one {
+  to {
+    transform: translate3d(14vw, 12vh, 0) scale(1.12);
+  }
+}
+
+@keyframes drift-two {
+  to {
+    transform: translate3d(-12vw, -10vh, 0) scale(0.92);
+  }
+}
+
+/* ---------- Top bar ---------- */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem clamp(1rem, 4vw, 2.5rem);
+  background: var(--topbar-bg);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+
+.brand__icon {
+  width: 40px;
+  height: 40px;
+  flex: none;
+}
+
+.brand__slip {
+  fill: var(--bg);
+  stroke: var(--text);
+  stroke-width: 2.5;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.brand__tick {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.brand__box {
+  fill: var(--text);
+}
+
+.brand__slot {
+  fill: var(--accent);
+}
+
+.brand:hover .brand__slip,
+.brand:hover .brand__tick {
+  transform: translateY(6px);
+}
+
+.brand__name {
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 3.6vw, 1.5rem);
+  letter-spacing: 0.01em;
+}
+
+.topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 999px;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.mode-badge::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+
+.mode-badge[data-mode="server"]::before {
+  background: var(--primary);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    transform: scale(1.6);
+    opacity: 0.5;
+  }
+}
+
+.theme-toggle {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  cursor: pointer;
+  transition: transform 0.25s var(--ease-out);
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px) rotate(-12deg);
+}
+
+.theme-toggle svg {
+  grid-area: 1 / 1;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  transition: transform 0.5s var(--ease-out), opacity 0.3s ease;
+}
+
+.theme-toggle__moon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.4);
+}
+
+:root[data-theme="dark"] .theme-toggle__sun {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.4);
+}
+
+:root[data-theme="dark"] .theme-toggle__moon {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle__sun {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.4);
+  }
+
+  :root:not([data-theme="light"]) .theme-toggle__moon {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Layout ---------- */
+
+main {
+  overflow-x: clip; /* the stamp animation never causes sideways scroll */
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+.section {
+  padding: clamp(3rem, 8vw, 5.5rem) 0 0;
+}
+
+.section__head {
+  max-width: 40rem;
+  margin-bottom: 1.75rem;
+}
+
+.section__head h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  margin-bottom: 0.5rem;
+}
+
+.section__head p {
+  color: var(--text-soft);
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+  padding: clamp(2.5rem, 9vw, 6rem) 0 0;
+  text-align: center;
+}
+
+.hero__kicker {
+  display: inline-block;
+  margin-bottom: 1rem;
+  padding: 0.25rem 0.9rem;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: 999px;
+  font-family: var(--font-heading);
+  letter-spacing: 0.08em;
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.9rem, 11vw, 6.2rem);
+  line-height: 1;
+  text-shadow: 0 6px 30px var(--glow-1);
+}
+
+.hero__lead {
+  max-width: 36rem;
+  margin: 1.4rem auto 0;
+  font-size: clamp(1.05rem, 2.4vw, 1.2rem);
+  color: var(--text);
+}
+
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 2rem;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.5rem, 2vw, 1rem);
+  max-width: 40rem;
+  margin: 3rem auto 0;
+}
+
+.stat {
+  position: relative;
+  padding: 1rem 0.5rem 1.1rem;
+  border: 1.5px solid var(--border-soft);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+/* Tally marks above each number. */
+.stat::before {
+  content: "";
+  display: block;
+  width: 34px;
+  height: 10px;
+  margin: 0 auto 0.4rem;
+  background: repeating-linear-gradient(to right, var(--border-strong) 0 2px, transparent 2px 7px);
+  opacity: 0.8;
+}
+
+.stat dt {
+  font-family: var(--font-heading);
+  font-size: clamp(0.78rem, 2.4vw, 0.95rem);
+  color: var(--text-soft);
+}
+
+.stat dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 7vw, 2.8rem);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 48px;
+  padding: 0.7rem 1.4rem;
+  overflow: hidden;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-btn);
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  cursor: pointer;
+  isolation: isolate;
+  box-shadow: var(--shadow);
+  transition:
+    transform 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out),
+    opacity 0.2s ease;
+}
+
+.btn--primary {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.btn--ghost {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.btn--small {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  font-size: 0.98rem;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.btn__icon {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.35s var(--ease-out);
+}
+
+/* The ballot icon dips as if it is going into the slot. */
+.btn:hover:not(:disabled) .btn__icon--slip {
+  transform: translateY(4px) rotate(-8deg);
+}
+
+.btn:hover .btn__icon--arrow {
+  transform: translateY(3px);
+}
+
+.btn:hover .btn__icon--undo {
+  transform: rotate(-35deg);
+}
+
+.ripple {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  background: var(--ripple);
+  transform: scale(0);
+  pointer-events: none;
+  animation: ripple 0.6s ease-out forwards;
+}
+
+.btn--ghost .ripple,
+.theme-toggle .ripple {
+  background: var(--border-soft);
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* ---------- Ballot cards ---------- */
+
+.poll-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
+  gap: clamp(1rem, 3vw, 1.6rem);
+  align-items: start;
+}
+
+.ballot {
+  position: relative;
+  filter: drop-shadow(0 12px 22px var(--shadow-color));
+  transition: transform 0.35s var(--ease-out);
+}
+
+.ballot:hover {
+  transform: translateY(-5px) rotate(-0.4deg);
+}
+
+/* The ticket shape: two round notches cut at the perforation line. */
+.ballot__form {
+  padding: 0 1.25rem 1.25rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  -webkit-mask:
+    radial-gradient(circle at 0 var(--notch-y), transparent 11px, black 12px) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% var(--notch-y), transparent 11px, black 12px) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle at 0 var(--notch-y), transparent 11px, black 12px) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% var(--notch-y), transparent 11px, black 12px) right / 51% 100% no-repeat;
+}
+
+.ballot__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: var(--notch-y);
+  margin: 0 0.4rem;
+  border-bottom: 2px dashed var(--perforation);
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  color: var(--text-soft);
+}
+
+.ballot__body {
+  margin: 0;
+  padding: 1.1rem 0 0;
+  border: 0;
+  min-width: 0;
+}
+
+.ballot__question {
+  padding: 0;
+  margin-bottom: 1rem;
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.ballot__options {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.choice__label {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.6rem 0.35rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.choice__label:hover {
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+}
+
+.choice__input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.choice__box {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--bg);
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s var(--ease-out);
+}
+
+.choice__box svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--on-primary);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset 0.35s var(--ease-out);
+}
+
+.choice__input:checked + .choice__box {
+  border-color: var(--primary);
+  background: var(--primary);
+  transform: scale(1.08);
+}
+
+.choice__input:checked + .choice__box svg {
+  stroke-dashoffset: 0;
+}
+
+.choice__input:focus-visible + .choice__box {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.choice__text {
+  overflow-wrap: anywhere;
+}
+
+.choice.is-mine .choice__text {
+  font-weight: 700;
+}
+
+.choice.is-mine .choice__text::after {
+  content: " · your vote";
+  font-weight: 400;
+  font-size: 0.85em;
+  color: var(--text-soft);
+}
+
+.choice__count {
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.choice__bar {
+  display: block;
+  height: 6px;
+  margin: 0 0.6rem 0.35rem calc(24px + 1.35rem);
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--track);
+}
+
+.choice__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s var(--ease-out);
+}
+
+.choice.is-mine .choice__fill {
+  background: repeating-linear-gradient(-45deg, var(--primary) 0 6px, var(--border-strong) 6px 10px);
+}
+
+.ballot__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.1rem;
+}
+
+.ballot__actions .btn[hidden] {
+  display: none;
+}
+
+.ballot.is-busy .ballot__form {
+  opacity: 0.75;
+}
+
+/* Rubber stamp that lands when you have voted. */
+.ballot__stamp {
+  position: absolute;
+  top: calc(var(--notch-y) + 0.4rem);
+  right: 0.9rem;
+  padding: 0.1rem 0.6rem;
+  border: 3px double var(--stamp);
+  border-radius: 8px;
+  color: var(--stamp);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  transform: rotate(-14deg) scale(0.6);
+  transition: opacity 0.3s ease, transform 0.35s var(--ease-out);
+}
+
+.ballot.has-voted .ballot__stamp {
+  opacity: 0.85;
+  transform: rotate(-14deg) scale(1);
+}
+
+.ballot.has-voted .ballot__question {
+  padding-right: 5.5rem;
+}
+
+.ballot__stamp.is-pressed {
+  animation: stamp 0.45s var(--ease-out);
+}
+
+@keyframes stamp {
+  0% {
+    opacity: 0;
+    transform: rotate(-24deg) scale(2.2);
+  }
+  60% {
+    opacity: 1;
+    transform: rotate(-12deg) scale(0.92);
+  }
+  100% {
+    opacity: 0.85;
+    transform: rotate(-14deg) scale(1);
+  }
+}
+
+.empty {
+  padding: 2rem;
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius);
+  text-align: center;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+
+/* Paper slip that flies from the button into the ballot. */
+.flying-slip {
+  position: fixed;
+  z-index: 60;
+  width: 22px;
+  height: 28px;
+  border: 2px solid var(--primary);
+  border-radius: 3px;
+  background: var(--bg);
+  pointer-events: none;
+  animation: fly 0.7s var(--ease-out) forwards;
+}
+
+@keyframes fly {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  45% {
+    transform: translate(calc(var(--dx) * 0.5), calc(var(--dy) * 0.5 - 50px)) rotate(-25deg) scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) rotate(10deg) scale(0.3);
+    opacity: 0;
+  }
+}
+
+/* ---------- Create form ---------- */
+
+.create-card {
+  display: grid;
+  gap: 1.4rem;
+  max-width: 40rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 1.5px solid var(--border-soft);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.field {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.field > label,
+.field > legend {
+  padding: 0;
+  margin-bottom: 0.55rem;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+}
+
+.field > label {
+  margin-bottom: 0;
+}
+
+.field input[type="text"] {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.65rem 0.9rem;
+  border: 2px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--bg);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field input[type="text"]::placeholder {
+  color: var(--text-soft);
+  opacity: 0.8;
+}
+
+.field input[type="text"]:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--border-soft);
+}
+
+.field input[aria-invalid="true"] {
+  border-style: dashed;
+}
+
+.option-inputs {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0 0 0.4rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: answer;
+}
+
+.option-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: pop-in 0.35s var(--ease-out);
+}
+
+.option-input::before {
+  counter-increment: answer;
+  content: counter(answer);
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--border-strong);
+  border-radius: 6px;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+}
+
+.option-input__remove {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-out), background-color 0.2s ease;
+}
+
+.option-input__remove:hover {
+  background: var(--bg);
+  transform: rotate(90deg);
+}
+
+.option-input__remove svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.option-input__remove[hidden],
+#addOption[hidden] {
+  display: none;
+}
+
+#addOption {
+  justify-self: start;
+}
+
+.form-error:empty {
+  display: none;
+}
+
+.form-error {
+  padding: 0.6rem 0.9rem;
+  border-left: 4px solid var(--text);
+  border-radius: 6px;
+  background: var(--bg);
+  font-weight: 700;
+}
+
+.form-error::before {
+  content: "⚠ ";
+}
+
+.create-card > .btn {
+  justify-self: start;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* ---------- How it works ---------- */
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 1.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  position: relative;
+  padding: 1.5rem 1.3rem 1.4rem;
+  border: 1.5px solid var(--border-soft);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+
+.step:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lift);
+}
+
+.step__num {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.9rem;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+}
+
+.step h3 {
+  margin-bottom: 0.4rem;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+}
+
+.step p {
+  color: var(--text-soft);
+}
+
+/* ---------- Footer & toast ---------- */
+
+.footer {
+  margin-top: clamp(3.5rem, 9vw, 6rem);
+  padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 2rem;
+  border-top: 1px solid var(--border-soft);
+  background: var(--topbar-bg);
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.footer a {
+  text-underline-offset: 3px;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  z-index: 70;
+  max-width: calc(100% - 2rem);
+  padding: 0.75rem 1.2rem;
+  border-radius: var(--radius-btn);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-family: var(--font-heading);
+  box-shadow: var(--shadow-lift);
+  opacity: 0;
+  transform: translate(-50%, 150%);
+  transition: transform 0.4s var(--ease-out), opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.toast.is-shown {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ---------- Scroll reveal ---------- */
+
+.js .reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s ease, transform 0.7s var(--ease-out);
+}
+
+.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.js .ballot.reveal.is-visible:hover {
+  transform: translateY(-5px) rotate(-0.4deg);
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 520px) {
+  .mode-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.55rem;
+  }
+
+  .brand__icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .ballot__form {
+    padding: 0 1rem 1rem;
+  }
+
+  .hero__cta .btn {
+    flex: 1 1 100%;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .floating-ballot {
+    display: none;
+  }
+
+  .skip-link {
+    transition: none !important;
+  }
+
+  .backdrop__glow {
+    animation: none;
+  }
+}
