@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Local settings and secrets
+.env
+
+# Local SQLite database
+data/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

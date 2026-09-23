@@ -1,0 +1,20 @@
+{
+  "name": "voting-system",
+  "version": "1.0.0",
+  "description": "A one-person-one-vote polling app: cast, change or withdraw your vote. Node.js + Express 5 + built-in SQLite, with a browser-only demo mode.",
+  "private": true,
+  "license": "MIT",
+  "author": "brutall100",
+  "main": "server/server.js",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server/server.js",
+    "dev": "node --watch --env-file-if-exists=.env server/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
